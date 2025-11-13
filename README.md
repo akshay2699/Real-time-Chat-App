@@ -120,6 +120,8 @@ chat-app/
 │   └── node_modules/ (ignored)
 │
 └── README.md
+<img width="736" height="527" alt="image" src="https://github.com/user-attachments/assets/e841a649-d1e6-42ce-9092-462c8c2049a1" />
+
 
 
 # 🧠 4. **Features Implemented**
