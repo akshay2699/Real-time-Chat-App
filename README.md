@@ -31,7 +31,6 @@ cd backend
 python -m venv venv
 
 
-
 ### **2. Activate Virtualenv**
 
 
@@ -61,27 +60,6 @@ netstat -ano | findstr 6379
 
 venv\Scripts\python.exe -m daphne -p 8000 chat_backend.asgi:application
 
-2. Activate Venv
-venv\Scripts\activate
-
-3. Install Dependencies
-pip install -r requirements.txt
-
-4. Start Redis (via Docker)
-docker run -d --name redis7 -p 6379:6379 redis:7
-
-
-If Redis already running:
-
-netstat -ano | findstr 6379
-
-5. Run Backend Server (Daphne)
-venv\Scripts\python.exe -m daphne -p 8000 chat_backend.asgi:application
-
-
-Backend runs at:
-
-
 
 Backend URL:
 👉 **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
@@ -93,9 +71,6 @@ cd frontend
 npm install
 npm run dev
 
-
-
-Frontend runs at:
 Frontend URL:
 👉 **[http://localhost:5173/](http://localhost:5173/)**
 
@@ -103,9 +78,23 @@ Frontend URL:
 # 📂 3. **Project Structure**
 
 
-
-<img width="736" height="527" alt="image" src="https://github.com/user-attachments/assets/e841a649-d1e6-42ce-9092-462c8c2049a1" />
-
+chat-app/
+│
+├── backend/
+│   ├── chat_backend/       # Django settings + ASGI routing
+│   ├── chat/               # Consumers, models, serializers, views
+│   ├── requirements.txt
+│   └── venv/ (ignored)
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── services/
+│   ├── package.json
+│   └── node_modules/ (ignored)
+│
+└── README.md
 
 
 # 🧠 4. **Features Implemented**
@@ -149,30 +138,6 @@ Switch between **any user** without login (simulation).
 # 🛠 5. **API Endpoints**
 
 ### **List Users**
-
-=======
-Shows rooms
-
-Last message
-
-Timestamp
-
-Unread count badge
-
-Multi-user Simulation
-
-Switch between multiple users without login
-
-Message Pagination (20 per page)
-Robust Backend
-
-DRF for API
-
-Channels for WebSockets
-
-Redis for WS layers
-
-Clean serializers & views
 
 
 GET /api/users/
