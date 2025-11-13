@@ -103,23 +103,7 @@ Frontend URL:
 # 📂 3. **Project Structure**
 
 
-chat-app/
-│
-├── backend/
-│   ├── chat_backend/       # Django settings + ASGI routing
-│   ├── chat/               # Consumers, models, serializers, views
-│   ├── requirements.txt
-│   └── venv/ (ignored)
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   └── services/
-│   ├── package.json
-│   └── node_modules/ (ignored)
-│
-└── README.md
+
 <img width="736" height="527" alt="image" src="https://github.com/user-attachments/assets/e841a649-d1e6-42ce-9092-462c8c2049a1" />
 
 
