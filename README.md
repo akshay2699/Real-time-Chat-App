@@ -29,16 +29,25 @@ The app supports:
 1. Create Virtual Environment
 cd backend
 python -m venv venv
+
 2. Activate Venv
 venv\Scripts\activate
+
 3. Install Dependencies
 pip install -r requirements.txt
+
 4. Start Redis (via Docker)
 docker run -d --name redis7 -p 6379:6379 redis:7
+
+
 If Redis already running:
+
 netstat -ano | findstr 6379
+
 5. Run Backend Server (Daphne)
 venv\Scripts\python.exe -m daphne -p 8000 chat_backend.asgi:application
+
+
 Backend runs at:
 
 👉 http://127.0.0.1:8000/
@@ -47,6 +56,8 @@ Backend runs at:
 cd frontend
 npm install
 npm run dev
+
+
 Frontend runs at:
 
 👉 http://localhost:5173/
@@ -96,19 +107,26 @@ Chat list shows unread badge for the active user
 Chat Room List
 
 Shows rooms
+
 Last message
+
 Timestamp
+
 Unread count badge
 
 Multi-user Simulation
+
 Switch between multiple users without login
 
 Message Pagination (20 per page)
-
 Robust Backend
+
 DRF for API
+
 Channels for WebSockets
+
 Redis for WS layers
+
 Clean serializers & views
 
 🛠 5. API Endpoints
@@ -131,23 +149,10 @@ GET /api/rooms/<id>/messages/
 🔌 6. WebSocket Wiring
 ws://127.0.0.1:8000/ws/chat/<room_id>/
 
-| Type      | Description         |
-| --------- | ------------------- |
-| `message` | New message         |
-| `typing`  | User typing         |
-| `read`    | Message marked read |
 
+Events:
 
-📦 7. Production Readiness
-
-All state updated via WebSocket events
-
-Optimistic UI
-
-Auto scroll
-
-Auto reconnect
-
-Clean separation backend/frontend
-
-Fully meets assignment requirement
+Type	Description
+message	New message
+typing	User typing
+read	Message marked read
