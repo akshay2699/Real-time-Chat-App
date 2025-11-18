@@ -37,7 +37,11 @@ export default function ChatPage() {
     const socket = new ChatSocket(roomId, handleSocket);
     socketRef.current = socket;
 
-    return () => socket.socket.close();
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.socket.close();
+      }
+    };
   }, [roomId]);
 
   // handle websocket events

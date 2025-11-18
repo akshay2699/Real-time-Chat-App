@@ -25,11 +25,6 @@ export class ChatSocket {
 
     this.socket.onclose = (e) => {
       console.log("WS closed", e);
-      // small reconnect logic (attempt once after 1s)
-      setTimeout(() => {
-        console.log("WS reconnecting...");
-        this.connect();
-      }, 1000);
     };
 
     this.socket.onerror = (err) => {
