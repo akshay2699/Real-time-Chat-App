@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import UserList from "../components/UserList";
-import UserSelector from "../components/UserSelector";
 import ChatRoomList from "../components/ChatRoomList";
 import { useNavigate } from "react-router-dom";
 
-export default function Home() {
+export default function Home({ userId, onLogout }) {
   const [users, setUsers] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [activeUser, setActiveUser] = useState(
-    Number(localStorage.getItem("activeUser")) || 1
-  );
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     const loadRooms = () => {
       api
-        .get(`/rooms/?active_user=${activeUser}`)
+        .get(`/rooms/`)
         .then((res) => setRooms(res.data));
     };
 
@@ -37,37 +32,30 @@ export default function Home() {
       clearInterval(interval);
       window.removeEventListener("chat-updated", loadRooms);
     };
-  }, [activeUser]);
-
-  const changeActiveUser = (id) => {
-    setActiveUser(id);
-    localStorage.setItem("activeUser", id);
-  };
+  }, []);
 
   const startChat = (otherUserId) => {
     api
       .post("/rooms/create/", {
         user_id: otherUserId,
-        active_user_id: activeUser,
       })
       .then((res) => {
-        navigate(`/chat/${res.data.id}?activeUser=${activeUser}`);
+        navigate(`/chat/${res.data.id}`);
       });
   };
 
   return (
     <div className="h-screen flex">
       <div className="w-64 border-r bg-white flex flex-col">
-        <UserSelector
-          activeUser={activeUser}
-          setActiveUser={changeActiveUser}
-          users={users}
-        />
+        <div className="p-4 border-b">
+          <h1 className="text-lg font-bold">Chat App</h1>
+          <button onClick={onLogout} className="text-sm text-blue-500">Logout</button>
+        </div>
 
         <ChatRoomList
           rooms={rooms}
           onSelect={(id) =>
-            navigate(`/chat/${id}?activeUser=${activeUser}`)
+            navigate(`/chat/${id}`)
           }
         />
 

@@ -3,6 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from .models import ChatRoom, Message
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -11,6 +12,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_id = self.scope["url_route"]["kwargs"]["room_id"]
         self.room_group_name = f"chat_{self.room_id}"
+
+        # Token authentication
+        try:
+            token = self.scope['query_string'].decode().split('=')[1]
+            self.user = await self.get_user_from_token(token)
+            if not self.user:
+                await self.close()
+        except (IndexError, Token.DoesNotExist):
+            await self.close()
 
         # join group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -23,8 +33,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         """
         Expected payloads:
-        - typing: {"type":"typing", "sender_id": 1}
-        - message: {"type":"message", "text":"hi","sender_id":1}
+        - typing: {"type":"typing"}
+        - message: {"type":"message", "text":"hi"}
         - read: {"type":"read", "message_id": 123}
         """
         try:
@@ -34,14 +44,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         msg_type = data.get("type")
 
-        # Typing: 
+        # Typing:
         if msg_type == "typing":
-            sender_id = data.get("sender_id")
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     "type": "typing_event",
-                    "user_id": sender_id,
+                    "user_id": self.user.id,
                 },
             )
             return
@@ -49,18 +58,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # New message
         if msg_type == "message":
             text = data.get("text", "").strip()
-            sender_id = data.get("sender_id")
             if not text:
                 return
 
-            sender = await self._get_user(sender_id)
-            receiver = await self._get_receiver(sender)
+            receiver = await self._get_receiver(self.user)
 
-            if not sender or not receiver:
+            if not receiver:
                 # Fail silently if users can't be determined
                 return
 
-            message_obj = await self._create_message(sender, receiver, text)
+            message_obj = await self._create_message(self.user, receiver, text)
             serialized = await self._serialize_message(message_obj)
 
             # broadcast the message
@@ -89,7 +96,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
             return
 
-   
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({"type": "message", "message": event["message"]}))
 
@@ -99,12 +105,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def read_event(self, event):
         await self.send(text_data=json.dumps({"type": "read", "message_id": event.get("message_id")}))
 
-   
     @database_sync_to_async
-    def _get_user(self, user_id):
+    def get_user_from_token(self, token_key):
         try:
-            return User.objects.get(id=user_id)
-        except Exception:
+            return Token.objects.get(key=token_key).user
+        except Token.DoesNotExist:
             return None
 
     @database_sync_to_async
@@ -124,7 +129,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def _serialize_message(self, message):
-       
+
         return {
             "id": message.id,
             "text": message.text,

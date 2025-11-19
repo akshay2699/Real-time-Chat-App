@@ -7,7 +7,22 @@ from .models import ChatRoom, Message
 from .serializers import UserSerializer, ChatRoomSerializer, MessageSerializer
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 
+class LoginView(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'username': user.username
+        })
 
 class MessagePagination(PageNumberPagination):
     page_size = 20
@@ -16,12 +31,14 @@ class MessagePagination(PageNumberPagination):
 class MessageListView(generics.ListAPIView):
     serializer_class = MessageSerializer
     pagination_class = MessagePagination
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         room_id = self.kwargs['room_id']
         return Message.objects.filter(chatroom_id=room_id).order_by('-timestamp')
     
 class MarkMessageReadView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request, message_id):
         message = get_object_or_404(Message, id=message_id)
         message.is_read = True
@@ -32,16 +49,14 @@ class MarkMessageReadView(APIView):
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
 class ChatRoomListView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
-        active_user_id = request.GET.get("active_user")
+        active_user_id = request.user.id
 
-        if active_user_id is None:
-          
-            active_user_id = User.objects.first().id
-
-        rooms = ChatRoom.objects.all().order_by("-created_at")
+        rooms = ChatRoom.objects.filter(users=active_user_id).order_by("-created_at")
 
         serializer = ChatRoomSerializer(
             rooms,
@@ -51,13 +66,11 @@ class ChatRoomListView(APIView):
 
         return Response(serializer.data)
 
-
-
-    
 class CreateRoomView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         user_id = request.data.get("user_id")
-        active_user_id = request.data.get("active_user_id")  
+        active_user_id = request.user.id
 
         user = User.objects.get(id=active_user_id)
         other_user = User.objects.get(id=user_id)
@@ -70,4 +83,3 @@ class CreateRoomView(APIView):
         room = ChatRoom.objects.create()
         room.users.add(user, other_user)
         return Response(ChatRoomSerializer(room).data, status=201)
-

@@ -1,14 +1,12 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api from "../services/api";
 import ChatWindow from "../components/ChatWindow";
 import { ChatSocket } from "../services/websocket";
 
 export default function ChatPage() {
   const { roomId } = useParams();
-  const [searchParams] = useSearchParams();
-
-  const activeUser = Number(searchParams.get("activeUser"));
+  const activeUser = Number(localStorage.getItem("userId"));
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
@@ -80,7 +78,6 @@ export default function ChatPage() {
 
     socketRef.current.sendMessage({
       text: msg,
-      sender_id: activeUser,
     });
 
     // optimistic UI
@@ -114,7 +111,7 @@ export default function ChatPage() {
         text={text}
         setText={setText}
         onSend={sendMessage}
-        onTyping={() => socketRef.current.sendTyping(activeUser)}
+        onTyping={() => socketRef.current.sendTyping()}
         currentUser={currentUser}
       />
     </div>
