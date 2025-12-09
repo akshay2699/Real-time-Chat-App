@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Company;
 use DataTables;
 use Validator;
+use Mail;
+use App\Mail\NewUserNotification;
 
 class CompanyController extends Controller
 {
@@ -82,6 +84,16 @@ class CompanyController extends Controller
          
         $company = Company::updateOrCreate(['id' => $companyId], $details);  
         
+        $emailAddress = $request->email;
+        Mail::to($emailAddress)->send(new NewUserNotification);
+
+        // $data = ['name' => $request->name, 'email' => $request->email];
+        // $user['to'] = $request->email;
+
+        // Mail::send('admin.company.mail', $data, function($message) use($user){
+        //     $message->to($user['to']);
+        //     $message->subject('Subject of mail');
+        // });
         return response()->json(['success'=>'Company saved successfully.']);
     }
 
